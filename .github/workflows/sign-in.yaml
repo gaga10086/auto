@@ -12,3 +12,5 @@ jobs:
         with:
           node-version: lts/*
       - run: node index.js
+        env:
+          BDUSS: ${{ toJson(secrets) }}
