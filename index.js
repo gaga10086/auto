@@ -5,10 +5,9 @@ async function sleep(ms) {
 }
 
 function readTokens() {
-  return Object.entries(process.env.BDUSS).map(([name, value]) => ({
-    name,
-    value,
-  }));
+  return Object.entries(process.env)
+    .filter(([name]) => name.startsWith("BDUSS_"))
+    .map(([name, value]) => ({ name, value }));
 }
 
 async function request(url, options) {
