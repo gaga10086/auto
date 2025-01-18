@@ -4,6 +4,12 @@ async function sleep(ms) {
   return await new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function parseTokens() {
+  const tokens = JSON.parse(process.env.TOKENS);
+  delete tokens.github_token;
+  return tokens;
+}
+
 async function request(url, options) {
   const res = await fetch(url, options);
 
@@ -84,7 +90,7 @@ async function signOne(token) {
 }
 
 async function signAll() {
-  const tokens = JSON.parse(process.env.TOKENS);
+  const tokens = parseTokens();
 
   for (const [name, token] of Object.entries(tokens)) {
     console.log(`签到开始：${name}`);
