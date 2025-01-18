@@ -1,3 +1,5 @@
+name: Sign In
+
 on:
   schedule:
     - cron: 0 0 * * *
@@ -11,7 +13,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
-      - uses: oNaiPs/secrets-to-env-action@v1
-        with:
-          secrets: ${{ toJSON(secrets) }}
       - run: node index.js
+        env:
+          TOKENS: ${{ toJSON(secrets) }}

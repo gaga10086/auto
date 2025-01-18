@@ -4,12 +4,6 @@ async function sleep(ms) {
   return await new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function readTokens() {
-  return Object.entries(process.env)
-    .filter(([name]) => name.startsWith("BDUSS_"))
-    .map(([name, value]) => ({ name, value }));
-}
-
 async function request(url, options) {
   const res = await fetch(url, options);
 
@@ -23,7 +17,7 @@ async function request(url, options) {
 async function fetchTbs(token) {
   const { tbs, is_login } = await request(
     "http://tieba.baidu.com/dc/common/tbs",
-    { headers: { Cookie: "BDUSS=" + token.value } }
+    { headers: { Cookie: "BDUSS=" + token } }
   );
 
   if (is_login !== 1) {
@@ -36,7 +30,7 @@ async function fetchTbs(token) {
 async function fetchForums(token) {
   const { no, error, data } = await request(
     "https://tieba.baidu.com/mo/q/newmoindex",
-    { headers: { Cookie: "BDUSS=" + token.value } }
+    { headers: { Cookie: "BDUSS=" + token } }
   );
 
   if (no !== 0) {
@@ -60,7 +54,7 @@ async function signForum(forumName, tbs, token) {
         tbs,
         sign: md5(`kw=${forumName}tbs=${tbs}tiebaclient!!!`),
       }),
-      headers: { Cookie: "BDUSS=" + token.value },
+      headers: { Cookie: "BDUSS=" + token },
     }
   );
 
@@ -90,16 +84,15 @@ async function signOne(token) {
 }
 
 async function signAll() {
-  const tokens = readTokens();
+  const tokens = JSON.parse(process.env.TOKENS);
 
-  for (const token of tokens) {
-    console.log(`签到开始：${token.name}`);
-
+  for (const [name, token] of Object.entries(tokens)) {
+    console.log(`签到开始：${name}`);
     try {
       await signOne(token);
-      console.log(`签到结束：${token.name}`);
+      console.log(`签到结束：${name}`);
     } catch (error) {
-      console.error(`签到中止：${token.name}：${error.message}`);
+      console.error(`签到中止：${name}：${error.message}`);
     }
   }
 }
