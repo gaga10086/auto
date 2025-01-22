@@ -5,9 +5,9 @@ async function sleep(ms) {
 }
 
 function parseTokens() {
-  const tokens = JSON.parse(process.env.TOKENS);
-  delete tokens.github_token;
-  return tokens;
+  return Object.entries(JSON.parse(process.env.SECRETS))
+    .filter(([key]) => key.startsWith("TIEBA_"))
+    .map(([key, value]) => ({ name: key.slice(6), token: value }));
 }
 
 async function request(url, options) {
@@ -90,9 +90,7 @@ async function signOne(token) {
 }
 
 async function signAll() {
-  const tokens = parseTokens();
-
-  for (const [name, token] of Object.entries(tokens)) {
+  for (const { name, token } of parseTokens()) {
     console.log(`签到开始：${name}`);
     try {
       await signOne(token);

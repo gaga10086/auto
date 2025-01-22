@@ -1,4 +1,4 @@
-name: Sign In
+name: Tieba Sign In
 
 on:
   schedule:
@@ -13,6 +13,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
-      - run: node index.js
+      - run: node tieba/sign-in.js
         env:
-          TOKENS: ${{ toJSON(secrets) }}
+          SECRETS: ${{ toJSON(secrets) }}
