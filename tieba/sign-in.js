@@ -4,7 +4,7 @@ async function sleep(ms) {
   return await new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function parseTokens() {
+function parseSecrets() {
   return Object.entries(JSON.parse(process.env.SECRETS))
     .filter(([key]) => key.startsWith("TIEBA_"))
     .map(([key, value]) => ({ name: key.slice(6), token: value }));
@@ -90,7 +90,7 @@ async function signOne(token) {
 }
 
 async function signAll() {
-  for (const { name, token } of parseTokens()) {
+  for (const { name, token } of parseSecrets()) {
     console.log(`签到开始：${name}`);
     try {
       await signOne(token);

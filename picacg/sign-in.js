@@ -2,7 +2,7 @@ import { createHmac } from "crypto";
 
 const API_KEY = "C69BAF41DA5ABD1FFEDC6D2FEA56B";
 
-function parseCredentials() {
+function parseSecrets() {
   return Object.entries(JSON.parse(process.env.SECRETS))
     .filter(([key]) => key.startsWith("PICACG_"))
     .map(([key, value]) => ({
@@ -85,7 +85,7 @@ async function signOne(username, password) {
 }
 
 async function signAll() {
-  for (const { name, username, password } of parseCredentials()) {
+  for (const { name, username, password } of parseSecrets()) {
     console.log(`签到开始：${name}`);
     try {
       await signOne(username, password);
